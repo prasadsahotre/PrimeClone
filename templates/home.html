@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Netflix Movies</title>
+
+    <style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial, Helvetica, sans-serif;
+    }
+
+body{
+    background:#0f171e;
+    color:white;
+}
+
+/* Navbar */
+
+nav{
+        background: black;
+        position: sticky;
+        padding: 20px 50px;
+        top: 0;
+        z-index: 100;
+}
+
+.logo{
+    color:#00A8E1;
+    font-size:32px;
+    font-weight:bold;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+/* Hero */
+
+.hero{
+    height:350px;
+    background:
+    linear-gradient(to right,
+    rgba(15,23,30,.95),
+    rgba(15,23,30,.55)),
+    url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1500&q=80");
+
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+    padding:60px;
+}
+
+.hero h1{
+    font-size:60px;
+    max-width:500px;
+}
+
+/* Container */
+
+.container{
+    padding:40px 50px;
+}
+
+.container h2{
+    margin-bottom:25px;
+    font-size:30px;
+    color:#ffffff;
+}
+
+/* Movies Grid */
+
+.movies{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:25px;
+}
+
+/* Cards */
+
+.card{
+    background:#18212b;
+    border-radius:12px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:all .35s ease;
+    box-shadow:0 5px 20px rgba(0,0,0,.35);
+}
+
+.card:hover{
+    transform:translateY(-8px) scale(1.04);
+    box-shadow:0 10px 35px rgba(0,168,225,.4);
+}
+
+.card img{
+    width:100%;
+    height:320px;
+    object-fit:cover;
+}
+
+.info{
+    padding:18px;
+}
+
+.info h3{
+    margin-bottom:10px;
+    font-size:22px;
+}
+
+.genre{
+    color:#9cb3c9;
+    font-size:15px;
+}
+
+.year{
+    color:#00A8E1;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+/* Modal */
+
+.modal{
+    display:none;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(5,10,15,.95);
+    overflow:auto;
+    z-index:999;
+}
+
+.modal-content{
+    background:#18212b;
+    width:85%;
+    max-width:1050px;
+    margin:40px auto;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 0 30px rgba(0,0,0,.6);
+}
+
+.banner{
+    width:100%;
+    height:500px;
+    object-fit:cover;
+}
+
+.details{
+    padding:35px;
+}
+
+.details h1{
+    font-size:42px;
+    margin-bottom:20px;
+}
+
+.meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:25px;
+    color:#9cb3c9;
+    margin-bottom:25px;
+    font-size:16px;
+}
+
+.description{
+    margin:25px 0;
+    line-height:1.8;
+    color:#d7e3ee;
+}
+
+iframe{
+    width:100%;
+    height:450px;
+    border:none;
+    border-radius:12px;
+}
+
+.close{
+    position:absolute;
+    right:40px;
+    top:20px;
+    font-size:50px;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.close:hover{
+    color:#00A8E1;
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+    nav{
+        padding:15px 20px;
+    }
+
+    .hero{
+        height:250px;
+        padding:30px;
+    }
+
+    .hero h1{
+        font-size:40px;
+    }
+
+    .container{
+        padding:20px;
+    }
+
+    .banner{
+        height:280px;
+    }
+
+    .details{
+        padding:20px;
+    }
+
+    iframe{
+        height:250px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+    <nav>
+
+        <div class="logo">Amazon Prime</div>
+        
+        <div style="float:right;">
+
+        Welcome {{ user.username }}
+
+        <a href="{% url 'logout' %}"
+            style="color:white; margin-left:20px; text-decoration:none;">
+            Logout
+        </a>
+
+</div>
+
+    </nav>
+
+    <div class="hero">
+
+        <h1>Popular Movies</h1>
+
+    </div>
+
+    <div class="container">
+
+        <h2>Trending Now</h2>
+
+        <div class="movies">
+
+            {% for movie in movies %}
+
+            <div class="card" data-name="{{ movie.name }}" data-genre="{{ movie.genre }}"
+                data-year="{{ movie.releaseYear }}" data-rating="{{ movie.rating }}"
+                data-duration="{{ movie.duration }}" data-director="{{ movie.director }}" data-cast="{{ movie.cast }}"
+                data-description="{{ movie.description }}" data-poster="{{ movie.bannerUrl }}"
+                data-trailer="{{ movie.trailer }}" onclick="showMovie(this)">
+
+                <img src="{{ movie.bannerUrl }}" alt="{{ movie.name }}">
+
+                <div class="info">
+
+                    <h3>{{ movie.name }}</h3>
+
+                    <p class="genre">{{ movie.genre }}</p>
+
+                    <p class="year">{{ movie.releaseYear }}</p>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Movie Popup -->
+
+    <div class="modal" id="movieModal">
+
+        <span class="close" onclick="closeMovie()">&times;</span>
+
+        <div class="modal-content">
+
+            <img id="poster" class="banner">
+
+            <div class="details">
+
+                <h1 id="title"></h1>
+
+                <div class="meta">
+
+                    <span id="year"></span>
+
+                    <span id="genre"></span>
+
+                    <span id="rating"></span>
+
+                    <span id="duration"></span>
+
+                </div>
+
+                <p><strong>Director:</strong> <span id="director"></span></p>
+
+                <br>
+
+                <p><strong>Cast:</strong> <span id="cast"></span></p>
+
+                <div class="description" id="description"></div>
+
+                <h2>Official Trailer</h2>
+
+                <br>
+
+                <iframe
+                    id="trailer"
+                    width="100%"
+                    height="450"
+                    src=""
+                    title="YouTube video player"
+                    frameborder="0"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function showMovie(card) {
+
+            document.getElementById("movieModal").style.display = "block";
+
+            document.getElementById("poster").src = card.dataset.poster;
+
+            document.getElementById("title").innerHTML = card.dataset.name;
+
+            document.getElementById("year").innerHTML = "📅 " + card.dataset.year;
+
+            document.getElementById("genre").innerHTML = "🎬 " + card.dataset.genre;
+
+            document.getElementById("rating").innerHTML = "⭐ " + card.dataset.rating;
+
+            document.getElementById("duration").innerHTML = "⏱ " + card.dataset.duration;
+
+            document.getElementById("director").innerHTML = card.dataset.director;
+
+            document.getElementById("cast").innerHTML = card.dataset.cast;
+
+            document.getElementById("description").innerHTML = card.dataset.description;
+
+            document.getElementById("trailer").src = card.dataset.trailer;
+            console.log(card.dataset.trailer);
+
+        }
+
+        function closeMovie() {
+
+            document.getElementById("movieModal").style.display = "none";
+
+            document.getElementById("trailer").src = "";
+
+        }
+
+        window.onclick = function (event) {
+
+            var modal = document.getElementById("movieModal");
+
+            if (event.target == modal) {
+
+                closeMovie();
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
